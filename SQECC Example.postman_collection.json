@@ -1,0 +1,260 @@
+{
+	"info": {
+		"_postman_id": "2f890c4f-0b8b-4e6b-8782-5ebc1d302614",
+		"name": "SQECC Example",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8514986"
+	},
+	"item": [
+		{
+			"name": "Login as Admin",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"url\", \"sqecc-be.stg.squantumengine.com\");",
+							"pm.globals.set(\"email\", \"admin@smma.id\");",
+							"pm.globals.set(\"password\", \"admin\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Check OTP to have 200', function(){",
+							"    pm.response.to.have.status(200);",
+							"    const data = pm.response.json();",
+							"});",
+							"pm.test('Check admin email', function(){",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.agentProfile.email).to.eql('admin@smma.id');",
+							"    pm.globals.set('token', data.token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/v1/agent/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"agent",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "200 - Login Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/v1/agent/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"agent",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 10 Mar 2023 03:36:49 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 google"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzcWUgYXNtIiwicGF5bG9hZCI6eyJ1c2VySWQiOiJmNTc1Y2E5Mi1lN2VjLTRmNWEtYjNlOS1kZTc0OGJmZjNlOWEiLCJhY2NvdW50SWQiOiIxZGUwZmIwMS1jZTdkLTQ2ZWEtOWQwZS00YTBkZWQ0NmVhZWIiLCJyb2xlIjoiQURNSU4ifSwiaXNzIjoic3FlIiwiZXhwIjoxNjc4NTA1ODEwLCJpYXQiOjE2Nzg0MTk0MTAsImp0aSI6Ijc3ZTE4NjkxLWEwNjgtNDczMC1hZjZkLTg2MzBkMWZmMGMxYiJ9.bf2tWH0CzImT_Hi5paZp0I4h-dH0g2PwInxk0wR7D8I\",\n    \"agentProfile\": {\n        \"agentId\": \"f575ca92-e7ec-4f5a-b3e9-de748bff3e9a\",\n        \"firstName\": \"admin\",\n        \"lastName\": null,\n        \"email\": \"admin@smma.id\",\n        \"phone\": null,\n        \"active\": true,\n        \"employeeId\": null,\n        \"account\": {\n            \"accountId\": \"1de0fb01-ce7d-46ea-9d0e-4a0ded46eaeb\",\n            \"accountName\": \"sinarmas-quantum-engine\"\n        },\n        \"role\": \"ADMIN\",\n        \"supervisor\": null,\n        \"manager\": null\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Create Message",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"url\", \"sqecc-be.stg.squantumengine.com\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Check Message Response', function(){",
+							"    pm.response.to.have.status(201);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.message).to.eql('Inbox Created Successfully');",
+							"    pm.expect(data.channelType).to.be.a('string');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "jwt {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"inboxName\": \"CathTesting_Inbox\",\n    \"websiteUrl\": \"www.assurance.com\",\n    \"greetingInfo\": {\n        \"greetingEnabled\": false,\n        \"greetingMessage\": \"Welcome to CathTesting Contact Center\"\n    },\n    \"widgetColor\": \"#323DS\",\n    \"welcomeTitle\": \"Welcome to CathTesting\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/v1/account/a979328e-343c-43ac-9bba-3934bb2cd677/web-widget/inboxes",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"account",
+						"a979328e-343c-43ac-9bba-3934bb2cd677",
+						"web-widget",
+						"inboxes"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "201 - Create Message Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "jwt {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inboxName\": \"CathTesting_Inbox\",\n    \"websiteUrl\": \"www.assurance.com\",\n    \"greetingInfo\": {\n        \"greetingEnabled\": false,\n        \"greetingMessage\": \"Welcome to CathTesting Contact Center\"\n    },\n    \"widgetColor\": \"#323DS\",\n    \"welcomeTitle\": \"Welcome to CathTesting\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/v1/account/a979328e-343c-43ac-9bba-3934bb2cd677/web-widget/inboxes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"account",
+								"a979328e-343c-43ac-9bba-3934bb2cd677",
+								"web-widget",
+								"inboxes"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 10 Mar 2023 03:38:56 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 google"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"channelType\": \"WEB_WIDGET\",\n    \"inboxId\": \"191247bf-1099-432e-8483-cf358da9111f\",\n    \"message\": \"Inbox Created Successfully\"\n}"
+				}
+			]
+		}
+	]
+}
